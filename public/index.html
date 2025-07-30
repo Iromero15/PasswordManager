@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Inicio de Sesión</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 10%; }
+    .form { display: inline-block; text-align: left; }
+  </style>
+</head>
+<body>
+  <h2 id="titulo">Iniciar Sesión</h2>
+  <form class="form" action="/login" method="post" id="formulario">
+    <label id="labelUser" for="usuario">Usuario:</label><br />
+    <input type="text" name="usuario" required /><br /><br />
+    <label id="labelPass" for="clave">Contraseña:</label><br />
+    <input type="password" name="clave" required /><br /><br />
+    <button type="submit" id="btnLogin">Ingresar</button>
+  </form>
+  <br /><br />
+  <label for="lang">Idioma:</label>
+  <select id="lang" onchange="cambiarIdioma()">
+    <option value="es">Español</option>
+    <option value="en">English</option>
+  </select>
+
+  <script>
+    const textos = {
+      es: {
+        titulo: "Iniciar Sesión",
+        labelUser: "Usuario:",
+        labelPass: "Contraseña:",
+        btnLogin: "Ingresar"
+      },
+      en: {
+        titulo: "Login",
+        labelUser: "Username:",
+        labelPass: "Password:",
+        btnLogin: "Login"
+      }
+    };
+
+    function cambiarIdioma() {
+      const lang = document.getElementById('lang').value;
+      for (let key in textos[lang]) {
+        document.getElementById(key).innerText = textos[lang][key];
+      }
+      document.getElementById('formulario').action = `/login?lang=${lang}`;
+    }
+  </script>
+</body>
+</html>
