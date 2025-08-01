@@ -1,0 +1,4 @@
+No se guardan los msg
+
+Se puede enviar mensajes vacios y sin titulo (No se devería)
+

@@ -2,51 +2,33 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Inicio de Sesión</title>
+  <title>Login Local</title>
   <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 10%; }
-    .form { display: inline-block; text-align: left; }
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 10%;
+    }
+    input, button {
+      margin: 0.5rem;
+      padding: 0.5rem;
+      width: 200px;
+    }
+    #resultado {
+      color: red;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
-  <h2 id="titulo">Iniciar Sesión</h2>
-  <form class="form" action="/login" method="post" id="formulario">
-    <label id="labelUser" for="usuario">Usuario:</label><br />
-    <input type="text" name="usuario" required /><br /><br />
-    <label id="labelPass" for="clave">Contraseña:</label><br />
-    <input type="password" name="clave" required /><br /><br />
-    <button type="submit" id="btnLogin">Ingresar</button>
-  </form>
-  <br /><br />
-  <label for="lang">Idioma:</label>
-  <select id="lang" onchange="cambiarIdioma()">
-    <option value="es">Español</option>
-    <option value="en">English</option>
-  </select>
 
-  <script>
-    const textos = {
-      es: {
-        titulo: "Iniciar Sesión",
-        labelUser: "Usuario:",
-        labelPass: "Contraseña:",
-        btnLogin: "Ingresar"
-      },
-      en: {
-        titulo: "Login",
-        labelUser: "Username:",
-        labelPass: "Password:",
-        btnLogin: "Login"
-      }
-    };
+  <h2>Iniciar sesión</h2>
+  <input type="text" id="usuario" placeholder="Usuario"><br>
+  <input type="password" id="clave" placeholder="Contraseña"><br>
+  <button id="btnLogin">Ingresar</button>
 
-    function cambiarIdioma() {
-      const lang = document.getElementById('lang').value;
-      for (let key in textos[lang]) {
-        document.getElementById(key).innerText = textos[lang][key];
-      }
-      document.getElementById('formulario').action = `/login?lang=${lang}`;
-    }
-  </script>
+  <p id="resultado"></p>
+
+  <script type="module" src="app.js"></script>
 </body>
 </html>

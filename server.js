@@ -1,41 +1,78 @@
 const express = require('express');
+const fs = require('fs');
 const bcrypt = require('bcrypt');
-const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const bodyParser = require('body-parser');
+
 const app = express();
-const port = 3000;
+const PORT = 3000;
 
-// Base de datos
-const db = new sqlite3.Database('./db.sqlite');
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY,
-    username TEXT UNIQUE,
-    password TEXT
-  )`);
-  // Usuario de prueba: admin / 1234
-  const hash = bcrypt.hashSync("1234", 10);
-  db.run(`INSERT OR IGNORE INTO users (username, password) VALUES (?, ?)`, ["admin", hash]);
-});
-
-// Middleware
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Ruta de login
-app.post('/login', (req, res) => {
+// Guardamos intentos fallidos por IP
+const intentosFallidos = {};
+const LIMITE_INTENTOS = 5;
+const TIEMPO_BLOQUEO_MS = 60 * 1000; // 1 minuto
+
+function obtenerIp(req) {
+  return req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+}
+
+app.post('/login', async (req, res) => {
   const { usuario, clave } = req.body;
-  db.get(`SELECT * FROM users WHERE username = ?`, [usuario], (err, row) => {
-    if (row && bcrypt.compareSync(clave, row.password)) {
-      res.redirect(`/success.html?lang=${req.query.lang || 'es'}`);
-    } else {
-      res.send('<script>alert("Credenciales incorrectas"); window.history.back();</script>');
+  const ip = obtenerIp(req);
+
+  // Bloqueo activo
+  if (
+    intentosFallidos[ip] &&
+    intentosFallidos[ip].bloqueadoHasta > Date.now()
+  ) {
+    const espera = Math.ceil((intentosFallidos[ip].bloqueadoHasta - Date.now()) / 1000);
+    return res.json({
+      exito: false,
+      mensaje: `Demasiados intentos fallidos. Intentá de nuevo en ${espera} segundos.`
+    });
+  }
+
+  try {
+    const data = fs.readFileSync('./usuarios.json', 'utf-8');
+    const usuarios = JSON.parse(data);
+
+    const encontrado = usuarios.find(u => u.usuario === usuario);
+
+    if (!encontrado) {
+      registrarFallo(ip);
+      return res.json({ exito: false, mensaje: "Usuario incorrecto" });
     }
-  });
+
+    const valido = await bcrypt.compare(clave, encontrado.hash);
+
+    if (valido) {
+      // Éxito: reiniciar contador
+      delete intentosFallidos[ip];
+      return res.json({ exito: true, mensaje: "Inicio de sesión exitoso" });
+    } else {
+      registrarFallo(ip);
+      return res.json({ exito: false, mensaje: "Contraseña incorrecta" });
+    }
+  } catch (err) {
+    console.error('Error al procesar login:', err);
+    return res.status(500).json({ exito: false, mensaje: "Error interno del servidor" });
+  }
 });
 
-// Iniciar servidor
-app.listen(port, () => {
-  console.log(`Servidor en http://localhost:${port}`);
+function registrarFallo(ip) {
+  if (!intentosFallidos[ip]) {
+    intentosFallidos[ip] = { intentos: 1, bloqueadoHasta: 0 };
+  } else {
+    intentosFallidos[ip].intentos += 1;
+  }
+
+  if (intentosFallidos[ip].intentos >= LIMITE_INTENTOS) {
+    intentosFallidos[ip].bloqueadoHasta = Date.now() + TIEMPO_BLOQUEO_MS;
+  }
+}
+
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
