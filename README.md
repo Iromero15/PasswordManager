@@ -3,31 +3,25 @@ Login & Key Generator (Node/Express)
 Small, secure starter that combines a bcrypt-based login with a per-user key generator.
 Frontend is a minimal static page; backend is Node/Express with a clean, modular structure.
 
-Features
-Login
 
-Users stored in usuarios.json as a map: {"username": "bcryptHash", ...}.
+## Features
 
-Uses a dummy bcrypt hash to avoid username enumeration (timing side-channels).
+- **Login**
+  - Users stored in `usuarios.json` as a map: `{"username": "bcryptHash", ...}`.
+  - Uses a **dummy bcrypt hash** to avoid username enumeration (timing side-channels).
+  - Simple **per-IP lockout** after repeated failures.
+- **Per-user key generator**
+  - Derives short, URL-safe keys from `(username + word)` using **SHA-256 iterated `n` times**.
+  - The input *word* is **never stored in plaintext**. For each user, we keep `HMAC-SHA256(username:word) → n`.
+  - Modes: `nuevo` (reset to 1), `igual`, `mas` (n+1), `menos` (n−1).
+- **Audit**
+  - Logs every API hit (IP + endpoint + timestamp) to `ips.jsonl`.
 
-Simple per-IP lockout after repeated failures.
+---
 
-Per-user key generator
+## Project Structure
 
-Derives short, URL-safe keys from (username + word) using SHA-256 iterated n times.
-
-The input word is never stored in plaintext. For each user, we keep HMAC-SHA256(username:word) → n.
-
-Modes: nuevo (reset to 1), igual, mas (n+1), menos (n−1).
-
-Audit
-
-Logs every API hit (IP + endpoint + timestamp) to ips.jsonl.
-
-Project Structure
-bash
-Copy
-Edit
+```text
 tu-proyecto/
 ├─ public/
 │  ├─ index.html
@@ -53,6 +47,7 @@ tu-proyecto/
 ├─ ips.jsonl             # IP audit log (auto-created)
 ├─ .env                  # optional env vars
 └─ package.json
+
 API
 POST /login
 Verifies credentials with bcrypt. Responds with the same message whether the user exists or not.
@@ -62,7 +57,7 @@ Request
 json
 Copy
 Edit
-{ "usuario": "melina", "clave": "myPassword" }
+{ "usuario": "ignacio", "clave": "myPassword" }
 Success
 
 json
@@ -84,7 +79,7 @@ Request
 json
 Copy
 Edit
-{ "usuario": "melina", "palabra": "family", "modo": "mas" }
+{ "usuario": "ignacio", "palabra": "family", "modo": "mas" }
 modo ∈ { "nuevo", "igual", "mas", "menos" }
 
 Response
@@ -135,15 +130,15 @@ Edit
 npm run addUser
 
 # with options
-npm run addUser -- melina --rounds=12
-npm run addUser -- melina --force
+npm run addUser -- ignacio --rounds=12
+npm run addUser -- ignacio --force
 This writes to usuarios.json:
 
 json
 Copy
 Edit
 {
-  "melina": "$2b$12$...bcryptHash..."
+  "ignacio": "$2b$12$...bcryptHash..."
 }
 4) Run
 bash
@@ -171,7 +166,7 @@ curl -X POST http://localhost:3000/login \
 # Generate key (increment n)
 curl -X POST http://localhost:3000/generar-clave \
   -H "Content-Type: application/json" \
-  -d '{"usuario":"melina","palabra":"family","modo":"mas"}'
+  -d '{"usuario":"ignacio","palabra":"family","modo":"mas"}'
 Notes
 Keep usuarios.json and palabras/ outside any public/static directory.
 
