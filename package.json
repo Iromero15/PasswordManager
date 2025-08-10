@@ -1,27 +1,19 @@
 {
-  "name": "passwordmanager",
+  "name": "login-claves",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
+  "type": "commonjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "addUser": "node scripts/addUser.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Iromero15/PasswordManager.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Iromero15/PasswordManager/issues"
-  },
-  "homepage": "https://github.com/Iromero15/PasswordManager#readme",
   "dependencies": {
-    "bcrypt": "^6.0.0",
-    "body-parser": "^2.2.0",
-    "express": "^5.1.0",
-    "sqlite3": "^5.1.7"
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }

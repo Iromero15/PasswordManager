@@ -1,7 +1,6 @@
-
-[
-  {
-    "usuario": "Ignacio",
-    "hash": "$2b$10$JwcG6vxU.xbw8yzCygLyfO5sf6gxviQDMpW/zrH05SRFi8okwY1VC"
-  }
-]
+{
+  "Ignacio": "$2b$10$JwcG6vxU.xbw8yzCygLyfO5sf6gxviQDMpW/zrH05SRFi8okwY1VC",
+  "Melina": "$2b$10$fEojbfkuMxndtJ4CpQBE3uO0PPGc/WpJznrARGYgRE4yfHVjQA6Q.",
+  "Carlos": "$2b$10$dn75qVP8YkjUbCiAZXlVjuX8jHcw0uyhYYKBWJYbZ01kVGHZa.m..",
+  "Principe": "$2b$12$riIAuqO.TVqPMCdb8A6fsOgo9u63CzEht4L74xX6bgJeOlFZWzdvW"
+}
