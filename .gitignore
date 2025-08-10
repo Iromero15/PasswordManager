@@ -1,0 +1,12 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Secretos / bases
+.env
+.env.*
+usuarios.json
+usuarios.*.json
+ips.jsonl
+*.db
+*.sqlite*
