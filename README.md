@@ -1,27 +1,34 @@
-# PasswordManager
+PasswordManager
 Login & Key Generator (Node/Express)
+
 Small, secure starter that combines a bcrypt-based login with a per-user key generator.
 Frontend is a minimal static page; backend is Node/Express with a clean, modular structure.
 
+Features
+Login
 
-## Features
+Users stored in usuarios.json as a map: {"username": "bcryptHash", ...}.
 
-- **Login**
-  - Users stored in `usuarios.json` as a map: `{"username": "bcryptHash", ...}`.
-  - Uses a **dummy bcrypt hash** to avoid username enumeration (timing side-channels).
-  - Simple **per-IP lockout** after repeated failures.
-- **Per-user key generator**
-  - Derives short, URL-safe keys from `(username + word)` using **SHA-256 iterated `n` times**.
-  - The input *word* is **never stored in plaintext**. For each user, we keep `HMAC-SHA256(username:word) → n`.
-  - Modes: `nuevo` (reset to 1), `igual`, `mas` (n+1), `menos` (n−1).
-- **Audit**
-  - Logs every API hit (IP + endpoint + timestamp) to `ips.jsonl`.
+Uses a dummy bcrypt hash to avoid username enumeration (timing side-channels).
 
----
+Simple per-IP lockout after repeated failures.
 
-## Project Structure
+Per-user key generator
 
-```text
+Derives short, URL-safe keys from (username + word) using SHA-256 iterated n times.
+
+The input word is never stored in plaintext. For each user, we keep HMAC-SHA256(username:word) → n.
+
+Modes: nuevo (reset to 1), igual, mas (n+1), menos (n−1).
+
+Audit
+
+Logs every API hit (IP + endpoint + timestamp) to ips.jsonl.
+
+Project Structure
+text
+Copy
+Edit
 tu-proyecto/
 ├─ public/
 │  ├─ index.html
@@ -47,7 +54,6 @@ tu-proyecto/
 ├─ ips.jsonl             # IP audit log (auto-created)
 ├─ .env                  # optional env vars
 └─ package.json
-
 API
 POST /login
 Verifies credentials with bcrypt. Responds with the same message whether the user exists or not.
@@ -117,8 +123,7 @@ PORT=3000
 TRUST_PROXY=true
 PEPPER_KEYS=replace-with-a-long-random-secret
 DUMMY_HASH=$2b$10$IX5J0z7sCgh1P2G7y2N7Aej8H5QF7z2mQw1kYbY0r9x3c0p9o7C2K
-DUMMY_HASH must be a valid bcrypt hash (e.g., of "dummy-password").
-Generate your own if you prefer.
+DUMMY_HASH must be a valid bcrypt hash (e.g., of "dummy-password"). Generate your own if you prefer.
 
 3) Create users
 Use the helper script to add/update users in usuarios.json:
@@ -161,7 +166,7 @@ Edit
 # Login
 curl -X POST http://localhost:3000/login \
   -H "Content-Type: application/json" \
-  -d '{"usuario":"melina","clave":"myPassword"}'
+  -d '{"usuario":"ignacio","clave":"myPassword"}'
 
 # Generate key (increment n)
 curl -X POST http://localhost:3000/generar-clave \
@@ -179,4 +184,4 @@ For larger deployments, swap JSON files for SQLite/PostgreSQL.
 Do not expose endpoints that list users or words.
 
 License
-MIT (or your choice).
+MIT © 2025 Ignacio Romero
