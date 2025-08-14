@@ -2,30 +2,27 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Login Local</title>
+  <title>PasswordManager</title>
   <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      margin-top: 10%;
-    }
-    input, button {
-      margin: 0.5rem;
-      padding: 0.5rem;
-      width: 200px;
-    }
-    #resultado {
-      color: red;
-      margin-top: 1rem;
-    }
+    body { font-family: sans-serif; text-align: center; margin: 40px auto; max-width: 720px; }
+    input, button, select { margin: 0.5rem; padding: 0.5rem; }
+    input[type="text"], input[type="password"] { width: 240px; }
+    #resultado { color: red; margin-top: 1rem; }
+    .row { margin: 0.75rem 0; }
+    .slider-wrap { display: inline-flex; align-items: center; gap: 10px; }
+    .muted { color: #666; font-size: 0.95em; }
+    .ok { color: #0a6; font-weight: 600; }
+    .panel { margin-top: 1.25rem; }
   </style>
 </head>
 <body>
 
   <h2>Iniciar sesión</h2>
-  <input type="text" id="usuario" placeholder="Usuario"><br>
-  <input type="password" id="clave" placeholder="Contraseña"><br>
-  <button id="btnLogin">Ingresar</button>
+  <div class="row">
+    <input type="text" id="usuario" placeholder="Usuario"><br>
+    <input type="password" id="clave" placeholder="Contraseña"><br>
+    <button id="btnLogin">Ingresar</button>
+  </div>
 
   <p id="resultado"></p>
 
